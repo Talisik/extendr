@@ -1,9 +1,9 @@
 import path from "path";
 import fs from "fs";
-import Extension from "./extension.js";
+import { Extension } from "./extension.js";
 import { Config } from "./config.js";
 
-export default abstract class Loader {
+export abstract class Loader {
     static #extensions: Extension[] = [];
 
     static get extensions() {

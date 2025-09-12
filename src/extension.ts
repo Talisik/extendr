@@ -1,7 +1,7 @@
-import EventManager from "./event-manager.js";
+import { EventManager } from "./event-manager.js";
 import { ExtensionType } from "./types.js";
 
-export default class Extension {
+export class Extension {
     readonly config: ExtensionType;
 
     #loaded: boolean = false;

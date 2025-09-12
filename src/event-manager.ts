@@ -1,7 +1,7 @@
 import { Config } from "./config.js";
 import { ListenerCallbackType, ListenerType } from "./types.js";
 
-export default abstract class EventManager {
+export abstract class EventManager {
     static #listeners: Map<string, ListenerType[]> = new Map();
 
     private static binaryInsert(arr: ListenerType[], value: ListenerType) {

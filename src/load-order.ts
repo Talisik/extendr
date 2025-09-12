@@ -1,11 +1,11 @@
 import path from "path";
 import fs from "fs/promises";
 
-import Extension from "./extension.js";
+import { Extension } from "./extension.js";
 import { LoadOrderItemType, LoadOrderWritableItemType } from "./types.js";
 import { Terminal } from "./terminal.js";
 import { Config } from "./config.js";
-import Loader from "./loader.js";
+import { Loader } from "./loader.js";
 
 class LoadOrderItem {
     readonly config: LoadOrderItemType;
@@ -73,7 +73,7 @@ class LoadOrderItem {
     }
 }
 
-export default class LoadOrder {
+export class LoadOrder {
     static items: LoadOrderItem[] = [];
 
     static get asWritable(): LoadOrderWritableItemType[] {
