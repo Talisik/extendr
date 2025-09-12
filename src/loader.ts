@@ -1,5 +1,5 @@
 import path from "path";
-import fs from "fs";
+import fs from "fs/promises";
 import { Extension } from "./extension.js";
 import { Config } from "./config.js";
 
@@ -14,30 +14,32 @@ export abstract class Loader {
         return this.#extensions.length;
     }
 
-    static #readModule(filepath: string) {
-        if (!fs.existsSync(filepath)) return;
+    static async #readModule(filepath: string) {
+        if (!(await fs.stat(filepath)).isFile()) return;
 
-        const extensionModule = require(filepath);
+        const extensionModule = await import(filepath);
 
         if (typeof extensionModule.main === "function") return extensionModule;
     }
 
-    static #loadExtension(directory: string) {
+    static async #loadExtension(directory: string) {
         const fullpath = path.join(Config.extensionsPath, directory);
-        const stats = fs.statSync(fullpath);
+        const stats = await fs.stat(fullpath);
 
         if (!stats.isDirectory()) return;
 
         // Look for package.json to find the main entry point
         const packageJsonPath = path.join(fullpath, "package.json");
 
-        if (fs.existsSync(packageJsonPath)) {
+        if ((await fs.stat(packageJsonPath)).isFile()) {
             const packageJson = JSON.parse(
-                fs.readFileSync(packageJsonPath, "utf8")
+                await fs.readFile(packageJsonPath, "utf8")
             );
             const { name, main: mainFile = "index.js" } = packageJson;
 
-            const module = this.#readModule(path.join(fullpath, mainFile));
+            const module = await this.#readModule(
+                path.join(fullpath, mainFile)
+            );
 
             if (module)
                 return new Extension({
@@ -58,7 +60,7 @@ export abstract class Loader {
         }
 
         // Try to load index.js as fallback
-        const module = this.#readModule(path.join(fullpath, "index.js"));
+        const module = await this.#readModule(path.join(fullpath, "index.js"));
 
         if (module)
             return new Extension({
@@ -74,23 +76,23 @@ export abstract class Loader {
         });
     }
 
-    static #findExtensions() {
+    static async findExtensions() {
         this.#extensions = [];
 
         // Ensure the extensions directory exists
-        if (!fs.existsSync(Config.extensionsPath)) {
-            fs.mkdirSync(Config.extensionsPath, { recursive: true });
+        if (!(await fs.stat(Config.extensionsPath)).isDirectory()) {
+            await fs.mkdir(Config.extensionsPath, { recursive: true });
             return;
         }
 
         // Read all items in the extensions directory
-        const items = fs.readdirSync(Config.extensionsPath);
+        const items = await fs.readdir(Config.extensionsPath);
 
         console.log(`Found ${items.length} extension(s).`);
 
         for (const item of items)
             try {
-                const extension = this.#loadExtension(item);
+                const extension = await this.#loadExtension(item);
 
                 if (extension) this.#extensions.push(extension);
             } catch (error) {
