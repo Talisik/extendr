@@ -3,7 +3,6 @@ import fs from "fs/promises";
 
 import { Extension } from "./extension.js";
 import { LoadOrdrItemType, LoadOrdrWritableItemType } from "./helpers/types.js";
-import { Terminal } from "./terminal.js";
 import { Config } from "./helpers/config.js";
 import { Loadr } from "./loadr.js";
 import { getStat } from "./helpers/utils.js";
@@ -20,7 +19,7 @@ export class LoadOrdrItem {
         extension?: Extension;
     }) {
         this.config = config ?? {
-            installed: false,
+            enabled: false,
         };
         this.extension = extension;
     }
@@ -34,50 +33,12 @@ export class LoadOrdrItem {
 
         return `${directory}:${name}`;
     }
-
-    async *install() {
-        if (!this.extension)
-            return {
-                ok: false,
-                reason: "Extension not found",
-            };
-
-        if (this.extension.config.valid)
-            return {
-                ok: false,
-                reason: "Extension is not valid",
-            };
-
-        const npmCli = path.join(
-            Config.resourcesPath,
-            "app/node_modules/npm/bin/npm-cli.js"
-        );
-        const terminal = await Terminal.new({
-            command: process.execPath,
-            args: [npmCli, "run", "build"],
-            spawnConfig: {
-                cwd: this.extension!.config.path,
-                stdio: "inherit",
-            },
-        });
-
-        if (terminal == null)
-            return {
-                ok: false,
-                reason: "Failed to spawn terminal",
-            };
-
-        return {
-            ok: true,
-            terminal,
-        };
-    }
 }
 
 export class LoadOrdr {
     static items: LoadOrdrItem[] = [];
 
-    static get asWritable(): LoadOrdrWritableItemType[] {
+    static get writable(): LoadOrdrWritableItemType[] {
         return this.items.map((item) => ({
             ...item.config,
             name: item.name,
@@ -107,7 +68,7 @@ export class LoadOrdr {
             (item: LoadOrdrWritableItemType) =>
                 new LoadOrdrItem({
                     config: {
-                        installed: item.installed,
+                        enabled: item.enabled,
                     },
                     extension: this.#findExtension(item),
                 })
@@ -118,11 +79,17 @@ export class LoadOrdr {
         const stat = await getStat(Config.loadOrderPath);
 
         if (!stat || !stat.isDirectory())
-            await fs.mkdir(Config.loadOrderPath, { recursive: true });
+            await fs.mkdir(
+                path
+                    .normalize(Config.loadOrderPath)
+                    .split(path.sep)
+                    .slice(0, -1)
+                    .join(path.sep),
+                {
+                    recursive: true,
+                }
+            );
 
-        await fs.writeFile(
-            Config.loadOrderPath,
-            JSON.stringify(this.asWritable)
-        );
+        await fs.writeFile(Config.loadOrderPath, JSON.stringify(this.writable));
     }
 }

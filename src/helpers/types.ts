@@ -1,5 +1,5 @@
 export type LoadOrdrItemType = {
-    installed: boolean;
+    enabled: boolean;
 };
 
 export type LoadOrdrWritableItemType = LoadOrdrItemType & {
