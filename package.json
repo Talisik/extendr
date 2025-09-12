@@ -27,8 +27,5 @@
   "devDependencies": {
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
-  },
-  "dependencies": {
-    "tree-kill": "^1.2.2"
   }
 }
