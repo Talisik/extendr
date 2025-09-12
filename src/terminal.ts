@@ -2,7 +2,7 @@ import * as child_process from "child_process";
 import * as crypto from "crypto";
 import * as os from "os";
 import treeKill from "tree-kill";
-import { Config } from "./config.js";
+import { Config } from "./helpers/config.js";
 
 export class Terminal {
     /**

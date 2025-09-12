@@ -1,5 +1,5 @@
-import { Config } from "./config.js";
-import { ListenerCallbackType, ListenerType } from "./types.js";
+import { Config } from "./helpers/config.js";
+import { ListenerCallbackType, ListenerType } from "./helpers/types.js";
 
 export abstract class EventManager {
     static #listeners: Map<string, ListenerType[]> = new Map();

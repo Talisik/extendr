@@ -1,7 +1,8 @@
 import path from "path";
 import fs from "fs/promises";
 import { Extension } from "./extension.js";
-import { Config } from "./config.js";
+import { Config } from "./helpers/config.js";
+import { getStat } from "./helpers/utils.js";
 
 export abstract class Loader {
     static #extensions: Extension[] = [];
@@ -15,7 +16,9 @@ export abstract class Loader {
     }
 
     static async #readModule(filepath: string) {
-        if (!(await fs.stat(filepath)).isFile()) return;
+        const stat = await getStat(filepath);
+
+        if (!stat || !stat.isFile()) return;
 
         const extensionModule = await import(filepath);
 
@@ -24,14 +27,16 @@ export abstract class Loader {
 
     static async #loadExtension(directory: string) {
         const fullpath = path.join(Config.extensionsPath, directory);
-        const stats = await fs.stat(fullpath);
+        const stats = await getStat(fullpath);
 
-        if (!stats.isDirectory()) return;
+        if (!stats || !stats.isDirectory()) return;
 
         // Look for package.json to find the main entry point
         const packageJsonPath = path.join(fullpath, "package.json");
 
-        if ((await fs.stat(packageJsonPath)).isFile()) {
+        const stat = await getStat(packageJsonPath);
+
+        if (stat && stat.isFile()) {
             const packageJson = JSON.parse(
                 await fs.readFile(packageJsonPath, "utf8")
             );
@@ -79,8 +84,10 @@ export abstract class Loader {
     static async findExtensions() {
         this.#extensions = [];
 
+        const stat = await getStat(Config.extensionsPath);
+
         // Ensure the extensions directory exists
-        if (!(await fs.stat(Config.extensionsPath)).isDirectory()) {
+        if (!stat?.isDirectory()) {
             await fs.mkdir(Config.extensionsPath, { recursive: true });
             return;
         }

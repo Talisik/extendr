@@ -2,10 +2,14 @@ import path from "path";
 import fs from "fs/promises";
 
 import { Extension } from "./extension.js";
-import { LoadOrderItemType, LoadOrderWritableItemType } from "./types.js";
+import {
+    LoadOrderItemType,
+    LoadOrderWritableItemType,
+} from "./helpers/types.js";
 import { Terminal } from "./terminal.js";
-import { Config } from "./config.js";
+import { Config } from "./helpers/config.js";
 import { Loader } from "./loader.js";
+import { getStat } from "./helpers/utils.js";
 
 class LoadOrderItem {
     readonly config: LoadOrderItemType;
@@ -95,7 +99,9 @@ export class LoadOrder {
     }
 
     static async load() {
-        if (!(await fs.stat(Config.loadOrderPath)).isDirectory()) return;
+        const stat = await getStat(Config.loadOrderPath);
+
+        if (!stat || !stat.isDirectory()) return;
 
         const data = await fs.readFile(Config.loadOrderPath, "utf8");
         const items = JSON.parse(data);
@@ -112,7 +118,9 @@ export class LoadOrder {
     }
 
     static async save() {
-        if (!(await fs.stat(Config.loadOrderPath)).isDirectory())
+        const stat = await getStat(Config.loadOrderPath);
+
+        if (!stat || !stat.isDirectory())
             await fs.mkdir(Config.loadOrderPath, { recursive: true });
 
         await fs.writeFile(

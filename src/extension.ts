@@ -1,5 +1,5 @@
 import { EventManager } from "./event-manager.js";
-import { ExtensionType } from "./types.js";
+import { ExtensionType } from "./helpers/types.js";
 
 export class Extension {
     readonly config: ExtensionType;
