@@ -2,24 +2,21 @@ import path from "path";
 import fs from "fs/promises";
 
 import { Extension } from "./extension.js";
-import {
-    LoadOrderItemType,
-    LoadOrderWritableItemType,
-} from "./helpers/types.js";
+import { LoadOrdrItemType, LoadOrdrWritableItemType } from "./helpers/types.js";
 import { Terminal } from "./terminal.js";
 import { Config } from "./helpers/config.js";
-import { Loader } from "./loader.js";
+import { Loadr } from "./loadr.js";
 import { getStat } from "./helpers/utils.js";
 
-class LoadOrderItem {
-    readonly config: LoadOrderItemType;
+export class LoadOrdrItem {
+    readonly config: LoadOrdrItemType;
     readonly extension?: Extension;
 
     constructor({
         config,
         extension,
     }: {
-        config?: LoadOrderItemType;
+        config?: LoadOrdrItemType;
         extension?: Extension;
     }) {
         this.config = config ?? {
@@ -77,21 +74,21 @@ class LoadOrderItem {
     }
 }
 
-export class LoadOrder {
-    static items: LoadOrderItem[] = [];
+export class LoadOrdr {
+    static items: LoadOrdrItem[] = [];
 
-    static get asWritable(): LoadOrderWritableItemType[] {
+    static get asWritable(): LoadOrdrWritableItemType[] {
         return this.items.map((item) => ({
             ...item.config,
             name: item.name,
         }));
     }
 
-    static #findExtension(item: LoadOrderWritableItemType) {
+    static #findExtension(item: LoadOrdrWritableItemType) {
         const [folderName, name] = item.name.split(":");
         const fullpath = path.join(Config.extensionsPath, folderName);
 
-        return Loader.extensions.find(
+        return Loadr.extensions.find(
             (extension) =>
                 extension.config.name === name &&
                 extension.config.path === fullpath
@@ -107,8 +104,8 @@ export class LoadOrder {
         const items = JSON.parse(data);
 
         this.items = items.map(
-            (item: LoadOrderWritableItemType) =>
-                new LoadOrderItem({
+            (item: LoadOrdrWritableItemType) =>
+                new LoadOrdrItem({
                     config: {
                         installed: item.installed,
                     },

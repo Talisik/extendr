@@ -1,10 +1,10 @@
 import { Config } from "./helpers/config.js";
-import { ListenerCallbackType, ListenerType } from "./helpers/types.js";
+import { ListenrCallbackType, ListenrType } from "./helpers/types.js";
 
-export abstract class EventManager {
-    static #listeners: Map<string, ListenerType[]> = new Map();
+export abstract class EventManagr {
+    static #listeners: Map<string, ListenrType[]> = new Map();
 
-    private static binaryInsert(arr: ListenerType[], value: ListenerType) {
+    private static binaryInsert(arr: ListenrType[], value: ListenrType) {
         let low = 0,
             high = arr.length;
 
@@ -20,7 +20,7 @@ export abstract class EventManager {
 
     static addListener(
         eventName: string,
-        callback: ListenerCallbackType,
+        callback: ListenrCallbackType,
         priority: number,
         once: boolean
     ) {
@@ -50,7 +50,7 @@ export abstract class EventManager {
      */
     static on(
         eventName: string,
-        callback: ListenerCallbackType,
+        callback: ListenrCallbackType,
         priority: number = 0
     ) {
         return this.addListener(eventName, callback, priority, false);
@@ -63,7 +63,7 @@ export abstract class EventManager {
      */
     static once(
         eventName: string,
-        callback: ListenerCallbackType,
+        callback: ListenrCallbackType,
         priority: number = 0
     ) {
         return this.addListener(eventName, callback, priority, true);
@@ -74,7 +74,7 @@ export abstract class EventManager {
      * @param eventName - The name of the event
      * @param callback - The callback of the listener
      */
-    static remove(eventName: string, callback: ListenerCallbackType) {
+    static remove(eventName: string, callback: ListenrCallbackType) {
         if (!this.#listeners.has(eventName)) {
             return;
         }

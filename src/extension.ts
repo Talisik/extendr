@@ -1,4 +1,4 @@
-import { EventManager } from "./event-manager.js";
+import { EventManagr } from "./event-managr.js";
 import { ExtensionType } from "./helpers/types.js";
 
 export class Extension {
@@ -16,7 +16,7 @@ export class Extension {
         if (this.#loaded) return;
 
         this.config.main!({
-            events: EventManager,
+            events: EventManagr,
         });
 
         this.#loaded = true;

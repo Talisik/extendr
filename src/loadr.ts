@@ -4,7 +4,7 @@ import { Extension } from "./extension.js";
 import { Config } from "./helpers/config.js";
 import { getStat } from "./helpers/utils.js";
 
-export abstract class Loader {
+export abstract class Loadr {
     static #extensions: Extension[] = [];
 
     static get extensions() {
@@ -20,7 +20,7 @@ export abstract class Loader {
 
         if (!stat || !stat.isFile()) return;
 
-        const extensionModule = await import(filepath);
+        const extensionModule = await require(filepath);
 
         if (typeof extensionModule.main === "function") return extensionModule;
     }
@@ -46,38 +46,22 @@ export abstract class Loader {
                 path.join(fullpath, mainFile)
             );
 
-            if (module)
-                return new Extension({
-                    name,
-                    packageJson,
-                    main: module.main,
-                    path: fullpath,
-                    valid: true,
-                });
-
             return new Extension({
                 name,
                 packageJson,
+                main: module?.main,
                 path: fullpath,
-                valid: false,
-                reason: `Main file not found: ${mainFile}`,
+                valid: true,
             });
         }
 
         // Try to load index.js as fallback
         const module = await this.#readModule(path.join(fullpath, "index.js"));
 
-        if (module)
-            return new Extension({
-                main: module.main,
-                path: fullpath,
-                valid: true,
-            });
-
         return new Extension({
+            main: module?.main,
             path: fullpath,
-            valid: false,
-            reason: `Main file not found: index.js`,
+            valid: true,
         });
     }
 
@@ -95,7 +79,7 @@ export abstract class Loader {
         // Read all items in the extensions directory
         const items = await fs.readdir(Config.extensionsPath);
 
-        console.log(`Found ${items.length} extension(s).`);
+        if (Config.log) console.log(`Found ${items.length} extension(s).`);
 
         for (const item of items)
             try {

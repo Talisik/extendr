@@ -1,8 +1,8 @@
-export type LoadOrderItemType = {
+export type LoadOrdrItemType = {
     installed: boolean;
 };
 
-export type LoadOrderWritableItemType = LoadOrderItemType & {
+export type LoadOrdrWritableItemType = LoadOrdrItemType & {
     name: string;
 };
 
@@ -15,10 +15,10 @@ export type ExtensionType = {
     reason?: string;
 };
 
-export type ListenerCallbackType = (args: any[], returnValue: any) => any;
+export type ListenrCallbackType = (args: any[], returnValue: any) => any;
 
-export type ListenerType = {
+export type ListenrType = {
     priority: number;
     once: boolean;
-    callback: ListenerCallbackType;
+    callback: ListenrCallbackType;
 };
