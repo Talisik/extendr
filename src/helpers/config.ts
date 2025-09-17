@@ -1,5 +1,16 @@
+import { ExtensionPathType } from "./types.js";
+
 export abstract class Config {
     static log: boolean = false;
-    static extensionsPath: string;
+    static extensionsPaths: ExtensionPathType[];
     static loadOrderPath: string;
+    static listenerPrefix = "extendr";
+
+    static extensionsPathOf(name: string) {
+        for (const path of this.extensionsPaths) {
+            if (path.name === name) return path;
+        }
+
+        return null;
+    }
 }

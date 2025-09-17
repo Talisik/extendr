@@ -1,22 +1,11 @@
+import { IpcMainInvokeEvent } from "electron";
+import { Event } from "./event.js";
 import { Config } from "./helpers/config.js";
 import { ListenrCallbackType, ListenrType } from "./helpers/types.js";
+import { binaryInsert } from "./helpers/utils.js";
 
 export abstract class EventManagr {
     static #listeners: Map<string, ListenrType[]> = new Map();
-
-    private static binaryInsert(arr: ListenrType[], value: ListenrType) {
-        let low = 0,
-            high = arr.length;
-
-        while (low < high) {
-            const mid = Math.floor((low + high) / 2);
-
-            if (arr[mid]!.priority < value.priority) low = mid + 1;
-            else high = mid;
-        }
-
-        arr.splice(low, 0, value);
-    }
 
     static addListener(
         eventName: string,
@@ -31,7 +20,7 @@ export abstract class EventManagr {
         const listeners = this.#listeners.get(eventName);
         const listener = { priority, once, callback };
 
-        this.binaryInsert(listeners!, listener);
+        binaryInsert(listeners!, listener, ({ priority }) => priority);
 
         if (Config.log)
             console.log(
@@ -100,7 +89,16 @@ export abstract class EventManagr {
      * @param eventName - The name of the event
      * @param args - The arguments to be passed to the event
      */
-    static async fire(eventName: string, ...args: any[]) {
+    static async fire(
+        {
+            eventName,
+            invokeEvent,
+        }: {
+            eventName: string;
+            invokeEvent?: IpcMainInvokeEvent;
+        },
+        ...args: any[]
+    ) {
         if (Config.log) console.log("Firing Event:", eventName, args);
 
         if (!this.#listeners.has(eventName)) {
@@ -115,11 +113,16 @@ export abstract class EventManagr {
             console.log("Listeners for event:", eventName, listeners!.length);
 
         for (const listener of Array.from(listeners!)) {
-            returnValue = await listener.callback(args, returnValue);
+            const e = new Event(eventName, returnValue, invokeEvent);
+            const newReturnValue = await listener.callback(e, ...args);
+
+            if (newReturnValue !== undefined) returnValue = newReturnValue;
 
             if (listener.once) {
                 listeners!.splice(listeners!.indexOf(listener), 1);
             }
+
+            if (e.isStopPropagation) break;
         }
 
         return returnValue;

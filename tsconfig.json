@@ -34,13 +34,17 @@
         // "noPropertyAccessFromIndexSignature": true,
 
         // Recommended Options
-        "strict": true
+        "strict": true,
         // "jsx": "react-jsx",
         // "verbatimModuleSyntax": true,
         // "isolatedModules": true,
         // "noUncheckedSideEffectImports": true,
         // "moduleDetection": "force",
         // "skipLibCheck": true
+
+        "removeComments": true,
+        "stripInternal": true,
+        "pretty": false
     },
     "include": ["src/**/*"]
 }

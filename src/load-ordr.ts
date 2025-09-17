@@ -2,79 +2,90 @@ import path from "path";
 import fs from "fs/promises";
 
 import { Extension } from "./extension.js";
-import { LoadOrdrItemType, LoadOrdrWritableItemType } from "./helpers/types.js";
 import { Config } from "./helpers/config.js";
 import { Loadr } from "./loadr.js";
 import { getStat } from "./helpers/utils.js";
 
-export class LoadOrdrItem {
-    readonly config: LoadOrdrItemType;
-    readonly extension?: Extension;
-
-    constructor({
-        config,
-        extension,
-    }: {
-        config?: LoadOrdrItemType;
-        extension?: Extension;
-    }) {
-        this.config = config ?? {
-            enabled: false,
-        };
-        this.extension = extension;
-    }
-
-    get name() {
-        const directory = path
-            .normalize(this.extension!.config.path)
-            .split(path.sep)
-            .pop();
-        const name = this.extension!.config.name;
-
-        return `${directory}:${name}`;
-    }
-}
-
 export class LoadOrdr {
-    static items: LoadOrdrItem[] = [];
+    /**
+     * All extensions listed in this array are considered as enabled.
+     */
+    static extensions: Extension[] = [];
 
-    static get writable(): LoadOrdrWritableItemType[] {
-        return this.items.map((item) => ({
-            ...item.config,
-            name: item.name,
+    /**
+     * For displaying to the user.
+     */
+    static get displayable() {
+        return this.extensions.map((item) => ({
+            extendedName: item.extendedName,
+            extension: {
+                ...item.config,
+                main: undefined,
+            },
         }));
     }
 
-    static #findExtension(item: LoadOrdrWritableItemType) {
-        const [folderName, name] = item.name.split(":");
-        const fullpath = path.join(Config.extensionsPath, folderName);
+    static #findExtension(extendedName: string) {
+        const [extensionsName, extensionFolderName, extensionName] =
+            extendedName.split(":");
+        const extensionsPath = Config.extensionsPathOf(extensionsName);
+
+        if (!extensionsPath) return;
+
+        const fullpath = path.join(
+            extensionsPath.directory,
+            extensionFolderName
+        );
 
         return Loadr.extensions.find(
             (extension) =>
-                extension.config.name === name &&
-                extension.config.path === fullpath
+                extension.config.name === extensionName &&
+                extension.config.fullpath === fullpath
         );
     }
 
+    /**
+     * Load the load order from the file.
+     */
     static async load() {
         const stat = await getStat(Config.loadOrderPath);
 
-        if (!stat || !stat.isDirectory()) return;
+        if (!stat || stat.isDirectory()) return;
 
         const data = await fs.readFile(Config.loadOrderPath, "utf8");
         const items = JSON.parse(data);
 
-        this.items = items.map(
-            (item: LoadOrdrWritableItemType) =>
-                new LoadOrdrItem({
-                    config: {
-                        enabled: item.enabled,
+        this.extensions = items.map(
+            (extendedName: string) =>
+                this.#findExtension(extendedName) ??
+                new Extension(
+                    {
+                        name: extendedName,
+                        fullpath: "",
+                        directory: {
+                            name: extendedName.split(":")[0],
+                            directory: "",
+                        },
+                        valid: false,
+                        reason: "Extension not found",
                     },
-                    extension: this.#findExtension(item),
-                })
+                    []
+                )
         );
+
+        if (Config.log) {
+            const valid = this.extensions.filter((item) => item.config.valid);
+
+            console.log(
+                `Loaded ${this.extensions.length} extension(s) in load order,`,
+                `where ${valid.length} are valid.`
+            );
+        }
     }
 
+    /**
+     * Save the load order to the file.
+     */
     static async save() {
         const stat = await getStat(Config.loadOrderPath);
 
@@ -90,6 +101,9 @@ export class LoadOrdr {
                 }
             );
 
-        await fs.writeFile(Config.loadOrderPath, JSON.stringify(this.writable));
+        await fs.writeFile(
+            Config.loadOrderPath,
+            JSON.stringify(this.extensions)
+        );
     }
 }

@@ -1,279 +1,270 @@
-# extendr
+# Extendr
 
-A lightweight, TypeScript-first extension system for Node.js applications. `extendr` provides a robust framework for loading, managing, and organizing extensions with event-driven architecture and flexible configuration.
+An Electron extension management system that provides a robust framework for loading, managing, and orchestrating extensions in Electron applications.
 
 ## Features
 
--   🔌 **Dynamic Extension Loading**: Automatically discover and load extensions from specified directories
--   📦 **Package.json Support**: Extensions can define entry points via `package.json` or use default `index.js`
--   🎯 **Event System**: Priority-based event system with support for one-time listeners
--   🔄 **Load Order Management**: Configure and persist extension loading order
--   🛡️ **Type Safety**: Built with TypeScript for enhanced developer experience
--   📝 **Configurable Logging**: Optional logging for debugging and monitoring
+-   **Dynamic Extension Loading**: Automatically discover and load extensions from specified directories
+-   **Event Management**: Comprehensive event system for inter-extension communication
+-   **IPC Channel Management**: Streamlined communication between main and renderer processes
+-   **Load Order Management**: Control the order in which extensions are loaded
+-   **Extension Deployment**: Easy installation and copying of extensions
+-   **Download Throttling**: Built-in download management with balanced throttling
+-   **TypeScript Support**: Full TypeScript support with type definitions
 
 ## Installation
 
 ```bash
-npm install extendr
+npm install git+https://github.com/Talisik/extendr.git
 ```
 
 ## Quick Start
 
-```typescript
-import { Loadr, EventManagr, LoadOrdr, Config } from 'extendr';
-
-// Configure the extension system
-Config.extensionsPath = './extensions';
-Config.loadOrderPath = './load-order.json';
-Config.log = true; // Enable logging
-
-// Find and load extensions
-await Loadr.findExtensions();
-
-// Load extension order configuration
-await LoadOrdr.load();
-
-// Load all enabled extensions
-Loadr.extensions
-  .filter(ext => /* check if enabled */)
-  .forEach(ext => ext.load());
-```
-
-## Core Components
-
-### Loadr
-
-The main extension loader that discovers and manages extensions.
+### Main Process Setup
 
 ```typescript
-// Find all extensions in the configured directory
-await Loadr.findExtensions();
+import { app } from "electron";
+import * as extendr from "extendr";
+import path from "path";
 
-// Access loaded extensions
-console.log(`Found ${Loadr.extensionCount} extensions`);
-Loadr.extensions.forEach((ext) => {
-    console.log(`Extension: ${ext.config.name} at ${ext.config.path}`);
-});
-```
-
-### Extension
-
-Represents a single extension with its configuration and state.
-
-```typescript
-// Extensions are automatically created by Loadr
-// Each extension has:
-extension.config.name; // Extension name (from package.json)
-extension.config.path; // Full path to extension directory
-extension.config.main; // Main function to execute
-extension.config.valid; // Whether the extension is valid
-extension.load(); // Load and execute the extension
-```
-
-### EventManagr
-
-A priority-based event system for inter-extension communication.
-
-```typescript
-// Listen to events (lower priority numbers execute first)
-EventManagr.on(
-    "user:login",
-    async (args, returnValue) => {
-        console.log("User logged in:", args[0]);
-        return { processed: true };
-    },
-    10
-);
-
-// One-time listeners
-EventManagr.once(
-    "app:startup",
-    async (args) => {
-        console.log("App started");
-    },
-    0
-);
-
-// Fire events
-const result = await EventManagr.fire("user:login", { userId: 123 });
-
-// Remove listeners
-EventManagr.remove("user:login", callbackFunction);
-```
-
-### LoadOrdr
-
-Manages the loading order and enabled state of extensions.
-
-```typescript
-// Load order configuration from file
-await LoadOrdr.load();
-
-// Access load order items
-LoadOrdr.items.forEach((item) => {
-    console.log(
-        `${item.name}: ${item.config.enabled ? "enabled" : "disabled"}`
-    );
-});
-
-// Save current order to file
-await LoadOrdr.save();
-```
-
-### Config
-
-Global configuration for the extension system.
-
-```typescript
-Config.extensionsPath = "./my-extensions"; // Directory containing extensions
-Config.loadOrderPath = "./order.json"; // Load order configuration file
-Config.log = true; // Enable debug logging
-```
-
-## Creating Extensions
-
-### Basic Extension Structure
-
-```
-my-extension/
-├── package.json
-└── index.js
-```
-
-**package.json:**
-
-```json
-{
-    "name": "my-awesome-extension",
-    "main": "index.js"
-}
-```
-
-**index.js:**
-
-```javascript
-exports.main = function ({ events }) {
-    console.log("Extension loaded!");
-
-    // Listen to events
-    events.on("user:action", async (args) => {
-        console.log("User performed action:", args[0]);
-    });
-
-    // Extension initialization logic here
-};
-```
-
-### TypeScript Extension
-
-```typescript
-// types.ts
-export interface ExtensionContext {
-    events: typeof EventManagr;
-}
-
-// index.ts
-import { ExtensionContext } from "./types";
-
-export function main({ events }: ExtensionContext) {
-    events.on(
-        "app:ready",
-        async () => {
-            console.log("My extension is ready!");
-        },
-        0
-    );
-}
-```
-
-## Event System Details
-
-The event system supports:
-
--   **Priority-based execution**: Lower numbers execute first
--   **Async/await support**: All event handlers can be async
--   **Return value chaining**: Each handler receives the previous handler's return value
--   **One-time listeners**: Automatically removed after execution
--   **Dynamic listener management**: Add/remove listeners at runtime
-
-```typescript
-// Example: Authentication flow
-EventManagr.on(
-    "auth:validate",
-    async (args, previous) => {
-        const [token] = args;
-        const isValid = await validateToken(token);
-        return { ...previous, tokenValid: isValid };
-    },
-    10
-);
-
-EventManagr.on(
-    "auth:validate",
-    async (args, previous) => {
-        if (previous?.tokenValid) {
-            const [token] = args;
-            const user = await getUser(token);
-            return { ...previous, user };
-        }
-        return previous;
-    },
-    20
-);
-```
-
-## Load Order Configuration
-
-The load order file (`load-order.json`) structure:
-
-```json
-[
+// Configure extension system
+extendr.Config.log = true;
+extendr.Config.listenerPrefix = "extendr";
+extendr.Config.extensionsPaths = [
     {
-        "name": "core-extension:core",
-        "enabled": true
+        name: "local",
+        directory: path.join(app.getPath("userData"), "extensions"),
     },
     {
-        "name": "auth-extension:authentication",
-        "enabled": true
+        name: "portable",
+        directory: path.join(app.getPath("exe"), "../extensions"),
     },
-    {
-        "name": "feature-extension:features",
-        "enabled": false
+];
+extendr.Config.loadOrderPath = path.join(
+    app.getPath("userData"),
+    "load-order.json"
+);
+
+async function main() {
+    // Find extensions first. Load order relies on the extensions being found.
+    await extendr.Loadr.findExtensions();
+    // Load the load order.
+    await extendr.LoadOrdr.load();
+    // Setup the main process.
+    await extendr.Deployr.setupMain();
+}
+
+main();
+```
+
+### Preload Script Setup
+
+```typescript
+import { Deployr } from "extendr";
+
+// Setup preload handlers
+await Deployr.setupPreload();
+```
+
+### Renderer Process Usage
+
+```typescript
+// Access the extension API
+declare global {
+    interface Window {
+        extendr: {
+            addExtensions(directories: string[]): Promise<any>;
+            findExtensions(): Promise<any>;
+            getExtensions(): Promise<any>;
+            download(payload: any, callback: (data: any) => void): Promise<any>;
+            getInfo(videoUrl: string): Promise<any>;
+            extensions: { [extensionName: string]: any };
+        };
     }
-]
+}
+
+// Use the API
+const extensions = await window.extendr.getExtensions();
+console.log("Available extensions:", extensions);
 ```
 
 ## API Reference
 
-### Loadr
+### Core Classes
 
--   `static async findExtensions()`: Discover extensions in configured directory
--   `static get extensions`: Array of loaded Extension instances
--   `static get extensionCount`: Number of loaded extensions
+#### `Extension`
 
-### Extension
+Represents a single extension with loading and management capabilities.
 
--   `constructor(config: ExtensionType)`: Create extension instance
--   `load()`: Load and execute the extension
--   `config`: Extension configuration object
+```typescript
+class Extension {
+    readonly config: ExtensionType;
+    get extendedName(): string;
+    async loadMain(): Promise<any>;
+    static async new(
+        previousExtensions: Extension[],
+        extensionsPath: ExtensionPathType,
+        extensionSubPath: string
+    ): Promise<Extension>;
+}
+```
 
-### EventManagr
+#### `Loadr`
 
--   `static on(eventName, callback, priority?)`: Add persistent listener
--   `static once(eventName, callback, priority?)`: Add one-time listener
--   `static async fire(eventName, ...args)`: Fire event with arguments
--   `static remove(eventName, callback)`: Remove specific listener
+Static class for discovering and managing extensions.
 
-### LoadOrdr
+```typescript
+abstract class Loadr {
+    static get extensions(): Extension[];
+    static get extensionCount(): number;
+    static async findExtensions(): Promise<void>;
+    static async copyExtension(
+        directory: string,
+        extensionsPath: ExtensionPathType
+    ): Promise<any>;
+}
+```
 
--   `static async load()`: Load order configuration from file
--   `static async save()`: Save current order to file
--   `static items`: Array of LoadOrdrItem instances
--   `static get writable`: Serializable order configuration
+#### `EventManagr`
+
+Event management system for extension communication.
+
+```typescript
+abstract class EventManagr {
+    static async fire(
+        event: { eventName: string; invokeEvent?: any },
+        ...args: any[]
+    ): Promise<any>;
+    static on(
+        eventName: string,
+        callback: ListenrCallbackType,
+        priority?: number
+    ): void;
+    static listen(
+        eventName: string,
+        callback: ListenrCallbackType,
+        options?: { priority?: number; once?: boolean }
+    ): void;
+}
+```
+
+#### `Deployr`
+
+Main deployment and IPC setup class.
+
+```typescript
+abstract class Deployr {
+    static async setupMain(): Promise<void>;
+    static async setupPreload(): Promise<void>;
+}
+```
+
+#### `Config`
+
+Configuration management for the extension system.
+
+```typescript
+abstract class Config {
+    static log: boolean;
+    static extensionsPaths: ExtensionPathType[];
+    static loadOrderPath: string;
+    static extensionsPathOf(name: string): ExtensionPathType | null;
+}
+```
+
+### Types
+
+```typescript
+type ExtensionType = {
+    name?: string;
+    fullpath: string;
+    directory: ExtensionPathType;
+    main?: Function;
+    packageJson?: any;
+    valid: boolean;
+    reason?: string;
+};
+
+type ExtensionPathType = {
+    directory: string;
+    name: string;
+};
+
+type ListenrCallbackType = (event: Event, ...args: any[]) => any;
+```
+
+## Creating Extensions
+
+Extensions should follow this structure:
+
+### Directory Structure
+
+```
+my-extension/
+├── package.json
+├── index.js (or main file specified in package.json)
+└── ... other files
+```
+
+### Extension Entry Point
+
+```javascript
+// index.js
+export function main({ events }) {
+    // Listen to extension events with priority
+    events.on("extendr:getInfo", getInfo, -10);
+    events.on("extendr:download", download, -10);
+}
+
+// Example event handlers
+function getInfo(event, videoUrl) {
+    // Handle getting video information
+    console.log("Getting info for:", videoUrl);
+    // Return video metadata
+    return {
+        title: "Video Title",
+        duration: "00:05:30",
+        formats: ["mp4", "webm"],
+    };
+}
+
+function download(event, downloadId, payload) {
+    // Handle download requests
+    console.log("Starting download:", downloadId, payload);
+    // Implement download logic
+    // Send progress updates via event system
+}
+```
+
+### Package.json Example
+
+```json
+{
+    "name": "my-extension",
+    "version": "1.0.0",
+    "main": "index.js",
+    "description": "My awesome extension"
+}
+```
+
+## Configuration
+
+Configure Extendr by setting properties on the `Config` class:
+
+```typescript
+import { Config } from "extendr";
+
+Config.log = true; // Enable debug logging
+Config.extensionsPaths = [
+    { name: "local", directory: "./extensions" },
+    { name: "user", directory: "~/.myapp/extensions" },
+];
+Config.loadOrderPath = "./config/load-order.json";
+```
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
@@ -282,8 +273,3 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 3. Make your changes
 4. Add tests if applicable
 5. Submit a pull request
-
-## Repository
-
--   **GitHub**: [https://github.com/Talisik/extendr](https://github.com/Talisik/extendr)
--   **Issues**: [https://github.com/Talisik/extendr/issues](https://github.com/Talisik/extendr/issues)

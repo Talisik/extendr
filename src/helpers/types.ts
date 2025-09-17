@@ -1,24 +1,67 @@
-export type LoadOrdrItemType = {
-    enabled: boolean;
-};
-
-export type LoadOrdrWritableItemType = LoadOrdrItemType & {
-    name: string;
-};
+import { Event } from "../event.js";
 
 export type ExtensionType = {
+    /**
+     * The name of the extension.
+     */
     name?: string;
-    path: string;
+    /**
+     * The full path of the extension.
+     */
+    fullpath: string;
+    /**
+     * The directory of the extension.
+     */
+    directory: ExtensionPathType;
+    /**
+     * The main function of the extension.
+     */
     main?: Function;
+    /**
+     * The package.json of the extension.
+     */
     packageJson?: any;
+    /**
+     * Whether the extension is valid.
+     */
     valid: boolean;
+    /**
+     * The reason why the extension is not valid.
+     */
     reason?: string;
 };
 
-export type ListenrCallbackType = (args: any[], returnValue: any) => any;
+export type ListenrCallbackType = (event: Event, ...args: any[]) => any;
 
 export type ListenrType = {
+    /**
+     * The priority of the listener. Lower priority listeners are called first.
+     */
     priority: number;
+    /**
+     * Whether the listener is once.
+     */
     once: boolean;
+    /**
+     * The callback of the listener.
+     */
     callback: ListenrCallbackType;
+};
+
+export type ExtensionPathType = {
+    /**
+     * The directory of the extension.
+     */
+    directory: string;
+    /**
+     * The name of the extension.
+     */
+    name: string;
+};
+
+export type ChannelType = {
+    extensionName: string;
+    channelName: string;
+    channelID: string;
+    priority: number;
 };
