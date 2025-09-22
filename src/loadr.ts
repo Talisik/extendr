@@ -140,4 +140,16 @@ export abstract class Loadr {
         if (Config.log)
             console.log(`Found ${this.#extensions.length} extension(s).`);
     }
+
+    /**
+     * Get the module of an extension.
+     */
+    static async getExtensionModule(name: string) {
+        return this.#extensions.find(
+            (extension) =>
+                extension.extendedName === name ||
+                extension.config.name === name ||
+                extension.config.fullpath === name
+        )?.config.module;
+    }
 }

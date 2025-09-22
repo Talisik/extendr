@@ -90,12 +90,16 @@ export class Extension {
             const module = await this.#readModule(
                 path.join(fullpath, mainFile)
             );
+            const main = module?.main;
+
+            delete module?.main;
 
             return new Extension(
                 {
                     name,
                     packageJson,
-                    main: module?.main,
+                    module,
+                    main,
                     fullpath,
                     directory: extensionsPath,
                     valid: true,
@@ -106,10 +110,14 @@ export class Extension {
 
         // Try to load index.js as fallback
         const module = await this.#readModule(path.join(fullpath, "index.js"));
+        const main = module?.main;
+
+        delete module?.main;
 
         return new Extension(
             {
-                main: module?.main,
+                module,
+                main,
                 fullpath,
                 directory: extensionsPath,
                 valid: true,

@@ -14,6 +14,13 @@ export type ExtensionType = {
      */
     directory: ExtensionPathType;
     /**
+     * The module of the extension,
+     * excluding the `main` function.
+     */
+    module: {
+        [key: string]: any;
+    };
+    /**
      * The main function of the extension.
      */
     main?: Function;
