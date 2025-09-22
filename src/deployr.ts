@@ -163,11 +163,6 @@ export abstract class Deployr {
         for (const extension of LoadOrdr.extensions) await extension.loadMain();
     }
 
-    static async setupReady() {
-        for (const extension of LoadOrdr.extensions)
-            await extension.loadReady();
-    }
-
     static async setupPreload() {
         const channels: ChannelType[] = await ipcRenderer.invoke(
             ChannelNames.GET_EXTENSION_CHANNELS

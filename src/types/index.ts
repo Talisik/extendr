@@ -21,13 +21,9 @@ export type ExtensionType = {
         [key: string]: any;
     };
     /**
-     * Called before the Electron app is ready.
-     */
-    main?: Function;
-    /**
      * Called when the Electron app is ready.
      */
-    ready?: Function;
+    main?: Function;
     /**
      * The package.json of the extension.
      */

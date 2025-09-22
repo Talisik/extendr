@@ -56,32 +56,12 @@ export class Extension {
         return result;
     }
 
-    async loadReady() {
-        if (!this.config.valid) return;
-
-        if (!this.config.ready) return;
-
-        const result = await this.config.ready({
-            events: EventManagr,
-            channels: new Channelr(this.config.name!),
-            electron,
-        });
-
-        if (Config.log) console.log("Extension ready:", this.extendedName);
-
-        return result;
-    }
-
     static async #readModule(filepath: string) {
         const stat = await getStat(filepath);
 
         if (!stat || !stat.isFile()) return;
 
-        const r = await import(pathToFileURL(filepath).href);
-
-        console.log("QQQ", r);
-
-        return r;
+        return await import(pathToFileURL(filepath).href);
     }
 
     static async new(
@@ -109,7 +89,6 @@ export class Extension {
                 path.join(fullpath, mainFile)
             );
             const main = module?.main;
-            const ready = module?.ready;
 
             return new Extension(
                 {
@@ -117,7 +96,6 @@ export class Extension {
                     packageJson,
                     module,
                     main,
-                    ready,
                     fullpath,
                     directory: extensionsPath,
                     valid: true,
@@ -129,13 +107,11 @@ export class Extension {
         // Try to load index.js as fallback
         const module = await this.#readModule(path.join(fullpath, "index.js"));
         const main = module?.main;
-        const ready = module?.ready;
 
         return new Extension(
             {
                 module,
                 main,
-                ready,
                 fullpath,
                 directory: extensionsPath,
                 valid: true,
