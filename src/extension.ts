@@ -77,9 +77,7 @@ export class Extension {
 
         if (!stat || !stat.isFile()) return;
 
-        const extensionModule = await import(pathToFileURL(filepath).href);
-
-        if (typeof extensionModule.main === "function") return extensionModule;
+        return await import(pathToFileURL(filepath).href);
     }
 
     static async new(
