@@ -109,9 +109,6 @@ export class Extension {
             const main = module?.main;
             const ready = module?.ready;
 
-            delete module?.main;
-            delete module?.ready;
-
             return new Extension(
                 {
                     name,
@@ -131,9 +128,6 @@ export class Extension {
         const module = await this.#readModule(path.join(fullpath, "index.js"));
         const main = module?.main;
         const ready = module?.ready;
-
-        delete module?.main;
-        delete module?.ready;
 
         return new Extension(
             {
