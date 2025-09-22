@@ -62,6 +62,7 @@ export class LoadOrdr {
                     {
                         name: extendedName,
                         fullpath: "",
+                        module: {},
                         directory: {
                             name: extendedName.split(":")[0],
                             directory: "",
