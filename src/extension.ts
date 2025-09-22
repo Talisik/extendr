@@ -77,7 +77,11 @@ export class Extension {
 
         if (!stat || !stat.isFile()) return;
 
-        return await import(pathToFileURL(filepath).href);
+        const r = await import(pathToFileURL(filepath).href);
+
+        console.log("QQQ", r);
+
+        return r;
     }
 
     static async new(
