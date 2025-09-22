@@ -1,4 +1,4 @@
-import { ExtensionPathType } from "./types.js";
+import { ExtensionPathType } from "../types/index.js";
 
 export abstract class Config {
     static log: boolean = false;

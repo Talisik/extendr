@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import { Extension } from "./extension.js";
 import { Config } from "./helpers/config.js";
 import { getStat } from "./helpers/utils.js";
-import { ExtensionPathType } from "./helpers/types.js";
+import { ExtensionPathType } from "./types/index.js";
 import path from "path";
 
 export abstract class Loadr {

@@ -1,7 +1,7 @@
 import { IpcMainInvokeEvent } from "electron";
 import { Event } from "./event.js";
 import { Config } from "./helpers/config.js";
-import { ListenrCallbackType, ListenrType } from "./helpers/types.js";
+import { ListenrCallbackType, ListenrType } from "./types/index.js";
 import { binaryInsert } from "./helpers/utils.js";
 
 export abstract class EventManagr {

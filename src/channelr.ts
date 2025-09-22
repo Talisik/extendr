@@ -1,4 +1,4 @@
-import { ChannelType } from "./helpers/types.js";
+import { ChannelType } from "./types/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { binaryInsert } from "./helpers/utils.js";
 

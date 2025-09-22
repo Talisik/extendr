@@ -1,5 +1,5 @@
 import { EventManagr } from "./event-managr.js";
-import { ExtensionPathType, ExtensionType } from "./helpers/types.js";
+import { ExtensionPathType, ExtensionType } from "./types/index.js";
 import { getStat } from "./helpers/utils.js";
 import * as electron from "electron";
 import path from "path";

@@ -7,7 +7,7 @@ import {
 } from "electron";
 import { EventManagr } from "./event-managr.js";
 import { Channelr } from "./channelr.js";
-import { ChannelType } from "./helpers/types.js";
+import { ChannelType } from "./types/index.js";
 import { BalancedDownloadThrottlr } from "./balanced-download-throttlr.js";
 import { LoadOrdr } from "./load-ordr.js";
 import { Loadr } from "./loadr.js";

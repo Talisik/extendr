@@ -4,12 +4,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "scripts"
+    "dist"
   ],
   "type": "module",
   "scripts": {
-    "build": "tsc && node scripts/copy-global-types.js",
+    "build": "tsc",
     "test": "ts-node test/index.ts",
     "prepare": "npm run build"
   },
