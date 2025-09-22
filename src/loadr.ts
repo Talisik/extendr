@@ -144,7 +144,7 @@ export abstract class Loadr {
     /**
      * Get the module of an extension.
      */
-    static async getExtensionModule(name: string) {
+    static getExtensionModule(name: string) {
         return this.#extensions.find(
             (extension) =>
                 extension.extendedName === name ||
