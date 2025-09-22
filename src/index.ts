@@ -6,3 +6,4 @@ export { Config } from "./helpers/config.js";
 export { Deployr } from "./deployr.js";
 export * from "./types/index.js";
 export * from "./helpers/channel-names.js";
+export * from "./types/global.js";
