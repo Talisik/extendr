@@ -47,7 +47,7 @@ export class LoadOrdr {
     /**
      * Sort the extensions by dependencies.
      */
-    static async sort() {
+    static sort() {
         this.extensions = this.extensions.sort((a, b) => {
             // If a depends on b, b should come first (return positive)
             if (a.config.dependencies.includes(b.config.name!)) return 1;
