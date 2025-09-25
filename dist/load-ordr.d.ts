@@ -13,10 +13,12 @@ export declare class LoadOrdr {
                 [key: string]: any;
             };
             packageJson?: any;
+            dependencies: string[];
             valid: boolean;
             reason?: string;
         };
     }[];
+    static sort(): void;
     static load(): Promise<void>;
     static save(): Promise<void>;
 }

@@ -11,6 +11,7 @@ export declare abstract class Loadr {
             [key: string]: any;
         };
         packageJson?: any;
+        dependencies: string[];
         valid: boolean;
         reason?: string;
     }[];

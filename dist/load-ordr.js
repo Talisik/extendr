@@ -26,6 +26,15 @@ export class LoadOrdr {
             extension: Object.assign(Object.assign({}, item.config), { main: undefined }),
         }));
     }
+    static sort() {
+        this.extensions = this.extensions.sort((a, b) => {
+            if (a.config.dependencies.includes(b.config.name))
+                return 1;
+            if (b.config.dependencies.includes(a.config.name))
+                return -1;
+            return 0;
+        });
+    }
     static load() {
         return __awaiter(this, void 0, void 0, function* () {
             const stat = yield getStat(Config.loadOrderPath);
@@ -45,6 +54,7 @@ export class LoadOrdr {
                     },
                     valid: false,
                     reason: "Extension not found",
+                    dependencies: [],
                 }, []);
             });
             if (Config.log) {

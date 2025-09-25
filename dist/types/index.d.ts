@@ -8,6 +8,7 @@ export type ExtensionType = {
     };
     main?: Function;
     packageJson?: any;
+    dependencies: string[];
     valid: boolean;
     reason?: string;
 };
