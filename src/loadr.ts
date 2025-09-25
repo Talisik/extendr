@@ -11,6 +11,7 @@ export abstract class Loadr {
     static get displayable() {
         return this.#extensions.map(({ config }) => ({
             ...config,
+            module: undefined,
             main: undefined,
         }));
     }

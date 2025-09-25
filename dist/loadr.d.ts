@@ -3,13 +3,11 @@ import { ExtensionPathType } from "./types/index.js";
 export declare abstract class Loadr {
     #private;
     static get displayable(): {
+        module: undefined;
         main: undefined;
         name?: string;
         fullpath: string;
         directory: ExtensionPathType;
-        module: {
-            [key: string]: any;
-        };
         packageJson?: any;
         dependencies: string[];
         valid: boolean;
