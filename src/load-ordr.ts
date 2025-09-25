@@ -19,6 +19,7 @@ export class LoadOrdr {
         return Loadr.extensions.map((extension) => ({
             ...extension.config,
             priority: this.extensions.indexOf(extension),
+            active: this.extensions.includes(extension),
             module: undefined,
             main: undefined,
         }));
@@ -68,27 +69,11 @@ export class LoadOrdr {
         if (!stat || stat.isDirectory()) return;
 
         const data = await fs.readFile(Config.loadOrderPath, "utf8");
-        const items = JSON.parse(data);
+        const items: string[] = JSON.parse(data);
 
-        this.extensions = items.map(
-            (extendedName: string) =>
-                this.#findExtension(extendedName) ??
-                new Extension(
-                    {
-                        name: extendedName,
-                        fullpath: "",
-                        module: {},
-                        directory: {
-                            name: extendedName.split(":")[0],
-                            directory: "",
-                        },
-                        valid: false,
-                        reason: "Extension not found",
-                        dependencies: [],
-                    },
-                    []
-                )
-        );
+        this.extensions = items
+            .map((extendedName: string) => this.#findExtension(extendedName))
+            .filter((extension) => extension !== undefined);
 
         if (Config.log) {
             const valid = this.extensions.filter((item) => item.config.valid);

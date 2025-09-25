@@ -15,13 +15,12 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _a, _LoadOrdr_findExtension;
 import path from "path";
 import fs from "fs/promises";
-import { Extension } from "./extension.js";
 import { Config } from "./helpers/config.js";
 import { Loadr } from "./loadr.js";
 import { getStat } from "./helpers/utils.js";
 export class LoadOrdr {
     static get displayable() {
-        return Loadr.extensions.map((extension) => (Object.assign(Object.assign({}, extension.config), { priority: this.extensions.indexOf(extension), module: undefined, main: undefined })));
+        return Loadr.extensions.map((extension) => (Object.assign(Object.assign({}, extension.config), { priority: this.extensions.indexOf(extension), active: this.extensions.includes(extension), module: undefined, main: undefined })));
     }
     static sort() {
         this.extensions = this.extensions.sort((a, b) => {
@@ -39,21 +38,9 @@ export class LoadOrdr {
                 return;
             const data = yield fs.readFile(Config.loadOrderPath, "utf8");
             const items = JSON.parse(data);
-            this.extensions = items.map((extendedName) => {
-                var _b;
-                return (_b = __classPrivateFieldGet(this, _a, "m", _LoadOrdr_findExtension).call(this, extendedName)) !== null && _b !== void 0 ? _b : new Extension({
-                    name: extendedName,
-                    fullpath: "",
-                    module: {},
-                    directory: {
-                        name: extendedName.split(":")[0],
-                        directory: "",
-                    },
-                    valid: false,
-                    reason: "Extension not found",
-                    dependencies: [],
-                }, []);
-            });
+            this.extensions = items
+                .map((extendedName) => __classPrivateFieldGet(this, _a, "m", _LoadOrdr_findExtension).call(this, extendedName))
+                .filter((extension) => extension !== undefined);
             if (Config.log) {
                 const valid = this.extensions.filter((item) => item.config.valid);
                 console.log(`Loaded ${this.extensions.length} extension(s) in load order,`, `where ${valid.length} are valid.`);

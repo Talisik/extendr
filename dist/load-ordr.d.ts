@@ -4,6 +4,7 @@ export declare class LoadOrdr {
     static extensions: Extension[];
     static get displayable(): {
         priority: number;
+        active: boolean;
         module: undefined;
         main: undefined;
         name?: string;
