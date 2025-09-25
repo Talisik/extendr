@@ -2,17 +2,6 @@ import { Extension } from "./extension.js";
 import { ExtensionPathType } from "./types/index.js";
 export declare abstract class Loadr {
     #private;
-    static get displayable(): {
-        module: undefined;
-        main: undefined;
-        name?: string;
-        fullpath: string;
-        directory: ExtensionPathType;
-        packageJson?: any;
-        dependencies: string[];
-        valid: boolean;
-        reason?: string;
-    }[];
     static get extensions(): Extension[];
     static get extensionCount(): number;
     static copyExtension(directory: string, extensionsPath: ExtensionPathType): Promise<{

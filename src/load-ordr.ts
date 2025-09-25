@@ -16,12 +16,11 @@ export class LoadOrdr {
      * For displaying to the user.
      */
     static get displayable() {
-        return this.extensions.map((item) => ({
-            extendedName: item.extendedName,
-            extension: {
-                ...item.config,
-                main: undefined,
-            },
+        return Loadr.extensions.map((extension) => ({
+            ...extension.config,
+            priority: this.extensions.indexOf(extension),
+            module: undefined,
+            main: undefined,
         }));
     }
 

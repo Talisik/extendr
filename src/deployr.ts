@@ -78,15 +78,11 @@ export abstract class Deployr {
     }
 
     static async #getExtensions() {
-        return Loadr.displayable;
+        return LoadOrdr.displayable;
     }
 
     static async #findExtensions(e: IpcMainInvokeEvent) {
         await Loadr.findExtensions();
-    }
-
-    static async #getLoadOrder() {
-        return LoadOrdr.displayable;
     }
 
     static async #setLoadOrder(e: IpcMainInvokeEvent, extendedNames: string[]) {
@@ -157,7 +153,6 @@ export abstract class Deployr {
         ipcMain.handle(ChannelNames.GET_INFO, this.#getInfo);
         ipcMain.handle(ChannelNames.KILL_CONTROLLER, this.#killController);
         ipcMain.handle(ChannelNames.DOWNLOAD, this.#download);
-        ipcMain.handle(ChannelNames.GET_LOAD_ORDER, this.#getLoadOrder);
         ipcMain.handle(ChannelNames.SET_LOAD_ORDER, this.#setLoadOrder);
 
         for (const extension of LoadOrdr.extensions) await extension.loadMain();
@@ -213,10 +208,6 @@ export abstract class Deployr {
                     ChannelNames.KILL_CONTROLLER,
                     controllerId
                 );
-            },
-
-            async getLoadOrder() {
-                return await ipcRenderer.invoke(ChannelNames.GET_LOAD_ORDER);
             },
 
             async setLoadOrder(loadOrderItems: any[]) {

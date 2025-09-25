@@ -25,9 +25,6 @@ import { Config } from "./helpers/config.js";
 import { getStat } from "./helpers/utils.js";
 import path from "path";
 export class Loadr {
-    static get displayable() {
-        return __classPrivateFieldGet(this, _a, "f", _Loadr_extensions).map(({ config }) => (Object.assign(Object.assign({}, config), { module: undefined, main: undefined })));
-    }
     static get extensions() {
         return Array.from(__classPrivateFieldGet(this, _a, "f", _Loadr_extensions));
     }

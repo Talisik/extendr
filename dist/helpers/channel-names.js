@@ -21,9 +21,6 @@ export class ChannelNames {
     static get GET_EXTENSION_CHANNELS() {
         return `${Config.listenerPrefix}:getExtensionChannels`;
     }
-    static get GET_LOAD_ORDER() {
-        return `${Config.listenerPrefix}:getLoadOrder`;
-    }
     static get SET_LOAD_ORDER() {
         return `${Config.listenerPrefix}:setLoadOrder`;
     }

@@ -32,10 +32,6 @@ export abstract class ChannelNames {
         return `${Config.listenerPrefix}:getExtensionChannels`;
     }
 
-    static get GET_LOAD_ORDER() {
-        return `${Config.listenerPrefix}:getLoadOrder`;
-    }
-
     static get SET_LOAD_ORDER() {
         return `${Config.listenerPrefix}:setLoadOrder`;
     }

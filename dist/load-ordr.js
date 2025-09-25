@@ -21,10 +21,7 @@ import { Loadr } from "./loadr.js";
 import { getStat } from "./helpers/utils.js";
 export class LoadOrdr {
     static get displayable() {
-        return this.extensions.map((item) => ({
-            extendedName: item.extendedName,
-            extension: Object.assign(Object.assign({}, item.config), { main: undefined }),
-        }));
+        return Loadr.extensions.map((extension) => (Object.assign(Object.assign({}, extension.config), { priority: this.extensions.indexOf(extension), module: undefined, main: undefined })));
     }
     static sort() {
         this.extensions = this.extensions.sort((a, b) => {

@@ -12,7 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _a, _Deployr_addExtensions, _Deployr_getExtensions, _Deployr_findExtensions, _Deployr_getLoadOrder, _Deployr_setLoadOrder, _Deployr_getInfo, _Deployr_killController, _Deployr_download, _Deployr_getExtensionChannels;
+var _a, _Deployr_addExtensions, _Deployr_getExtensions, _Deployr_findExtensions, _Deployr_setLoadOrder, _Deployr_getInfo, _Deployr_killController, _Deployr_download, _Deployr_getExtensionChannels;
 import { ChannelNames } from "./helpers/channel-names.js";
 import { contextBridge, ipcMain, ipcRenderer, } from "electron";
 import { EventManagr } from "./event-managr.js";
@@ -33,7 +33,6 @@ export class Deployr {
             ipcMain.handle(ChannelNames.GET_INFO, __classPrivateFieldGet(this, _a, "m", _Deployr_getInfo));
             ipcMain.handle(ChannelNames.KILL_CONTROLLER, __classPrivateFieldGet(this, _a, "m", _Deployr_killController));
             ipcMain.handle(ChannelNames.DOWNLOAD, __classPrivateFieldGet(this, _a, "m", _Deployr_download));
-            ipcMain.handle(ChannelNames.GET_LOAD_ORDER, __classPrivateFieldGet(this, _a, "m", _Deployr_getLoadOrder));
             ipcMain.handle(ChannelNames.SET_LOAD_ORDER, __classPrivateFieldGet(this, _a, "m", _Deployr_setLoadOrder));
             for (const extension of LoadOrdr.extensions)
                 yield extension.loadMain();
@@ -76,11 +75,6 @@ export class Deployr {
                 killController(controllerId) {
                     return __awaiter(this, void 0, void 0, function* () {
                         return yield ipcRenderer.invoke(ChannelNames.KILL_CONTROLLER, controllerId);
-                    });
-                },
-                getLoadOrder() {
-                    return __awaiter(this, void 0, void 0, function* () {
-                        return yield ipcRenderer.invoke(ChannelNames.GET_LOAD_ORDER);
                     });
                 },
                 setLoadOrder(loadOrderItems) {
@@ -165,15 +159,11 @@ _a = Deployr, _Deployr_addExtensions = function _Deployr_addExtensions(e_1, dire
     });
 }, _Deployr_getExtensions = function _Deployr_getExtensions() {
     return __awaiter(this, void 0, void 0, function* () {
-        return Loadr.displayable;
+        return LoadOrdr.displayable;
     });
 }, _Deployr_findExtensions = function _Deployr_findExtensions(e) {
     return __awaiter(this, void 0, void 0, function* () {
         yield Loadr.findExtensions();
-    });
-}, _Deployr_getLoadOrder = function _Deployr_getLoadOrder() {
-    return __awaiter(this, void 0, void 0, function* () {
-        return LoadOrdr.displayable;
     });
 }, _Deployr_setLoadOrder = function _Deployr_setLoadOrder(e, extendedNames) {
     return __awaiter(this, void 0, void 0, function* () {

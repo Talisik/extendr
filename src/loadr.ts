@@ -8,14 +8,6 @@ import path from "path";
 export abstract class Loadr {
     static #extensions: Extension[] = [];
 
-    static get displayable() {
-        return this.#extensions.map(({ config }) => ({
-            ...config,
-            module: undefined,
-            main: undefined,
-        }));
-    }
-
     static get extensions() {
         return Array.from(this.#extensions);
     }
