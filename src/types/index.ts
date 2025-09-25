@@ -29,6 +29,10 @@ export type ExtensionType = {
      */
     packageJson?: any;
     /**
+     * The required extensions of the extension.
+     */
+    dependencies: string[];
+    /**
      * Whether the extension is valid.
      */
     valid: boolean;

@@ -45,6 +45,22 @@ export class LoadOrdr {
     }
 
     /**
+     * Sort the extensions by dependencies.
+     */
+    static async sort() {
+        this.extensions = this.extensions.sort((a, b) => {
+            // If a depends on b, b should come first (return positive)
+            if (a.config.dependencies.includes(b.config.name!)) return 1;
+
+            // If b depends on a, a should come first (return negative)
+            if (b.config.dependencies.includes(a.config.name!)) return -1;
+
+            // No dependency relationship, maintain original order
+            return 0;
+        });
+    }
+
+    /**
      * Load the load order from the file.
      */
     static async load() {
@@ -69,6 +85,7 @@ export class LoadOrdr {
                         },
                         valid: false,
                         reason: "Extension not found",
+                        dependencies: [],
                     },
                     []
                 )
