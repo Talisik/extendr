@@ -6,6 +6,10 @@ export type ExtensionType = {
      */
     name?: string;
     /**
+     * The version of the extension.
+     */
+    version?: string;
+    /**
      * The full path of the extension.
      */
     fullpath: string;

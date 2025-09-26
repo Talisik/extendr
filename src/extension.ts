@@ -94,6 +94,7 @@ export class Extension {
             return new Extension(
                 {
                     name,
+                    version: packageJson.version,
                     packageJson,
                     module,
                     main,

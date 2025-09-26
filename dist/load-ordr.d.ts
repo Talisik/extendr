@@ -8,6 +8,7 @@ export declare class LoadOrdr {
         module: undefined;
         main: undefined;
         name?: string;
+        version?: string;
         fullpath: string;
         directory: import("./index.js").ExtensionPathType;
         packageJson?: any;

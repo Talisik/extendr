@@ -76,6 +76,7 @@ export class Extension {
                 const main = module === null || module === void 0 ? void 0 : module.main;
                 return new _a({
                     name,
+                    version: packageJson.version,
                     packageJson,
                     module,
                     main,
