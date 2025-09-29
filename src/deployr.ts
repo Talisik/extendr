@@ -91,7 +91,7 @@ export abstract class Deployr {
         try {
             for (const extendedName of extendedNames) {
                 const extension = LoadOrdr.extensions.find(
-                    (existingItem) => existingItem.extendedName === extendedName
+                    (extension) => extension.extendedName === extendedName
                 );
 
                 if (!extension) continue;
@@ -99,8 +99,10 @@ export abstract class Deployr {
                 LoadOrdr.extensions.push(extension);
             }
 
+            console.log("QQQ", extendedNames, LoadOrdr.extensions);
+
             // Save the updated load order to file
-            await LoadOrdr.save();
+            // await LoadOrdr.save();
 
             return { ok: true };
         } catch (error: any) {
