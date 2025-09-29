@@ -90,7 +90,7 @@ export abstract class Deployr {
 
         try {
             for (const extendedName of extendedNames) {
-                const extension = LoadOrdr.extensions.find(
+                const extension = Loadr.extensions.find(
                     (extension) => extension.extendedName === extendedName
                 );
 
@@ -98,13 +98,6 @@ export abstract class Deployr {
 
                 newExtensions.push(extension);
             }
-
-            console.log(
-                "BBB",
-                extendedNames,
-                LoadOrdr.extensions,
-                newExtensions
-            );
 
             LoadOrdr.extensions = newExtensions;
 

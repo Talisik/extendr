@@ -170,12 +170,11 @@ _a = Deployr, _Deployr_addExtensions = function _Deployr_addExtensions(e_1, dire
         const newExtensions = [];
         try {
             for (const extendedName of extendedNames) {
-                const extension = LoadOrdr.extensions.find((extension) => extension.extendedName === extendedName);
+                const extension = Loadr.extensions.find((extension) => extension.extendedName === extendedName);
                 if (!extension)
                     continue;
                 newExtensions.push(extension);
             }
-            console.log("BBB", extendedNames, LoadOrdr.extensions, newExtensions);
             LoadOrdr.extensions = newExtensions;
             yield LoadOrdr.save();
             return { ok: true };
