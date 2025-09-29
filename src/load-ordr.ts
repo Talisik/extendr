@@ -18,6 +18,7 @@ export class LoadOrdr {
     static get displayable() {
         return Loadr.extensions.map((extension) => ({
             ...extension.config,
+            extendedName: extension.extendedName,
             priority: this.extensions.indexOf(extension),
             active: this.extensions.includes(extension),
             module: undefined,
