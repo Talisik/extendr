@@ -104,11 +104,17 @@ export class LoadOrdr {
                 }
             );
 
-        await fs.writeFile(
-            Config.loadOrderPath,
-            JSON.stringify(
-                this.extensions.map(({ extendedName }) => extendedName)
-            )
+        console.log(
+            "QQQ",
+            this.extensions,
+            this.extensions.map(({ extendedName }) => extendedName)
         );
+
+        // await fs.writeFile(
+        //     Config.loadOrderPath,
+        //     JSON.stringify(
+        //         this.extensions.map(({ extendedName }) => extendedName)
+        //     )
+        // );
     }
 }

@@ -58,7 +58,7 @@ export class LoadOrdr {
                     .join(path.sep), {
                     recursive: true,
                 });
-            yield fs.writeFile(Config.loadOrderPath, JSON.stringify(this.extensions.map(({ extendedName }) => extendedName)));
+            console.log("QQQ", this.extensions, this.extensions.map(({ extendedName }) => extendedName));
         });
     }
 }

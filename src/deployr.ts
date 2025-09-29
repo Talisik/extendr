@@ -99,6 +99,13 @@ export abstract class Deployr {
                 newExtensions.push(extension);
             }
 
+            console.log(
+                "BBB",
+                extendedNames,
+                LoadOrdr.extensions,
+                newExtensions
+            );
+
             LoadOrdr.extensions = newExtensions;
 
             // Save the updated load order to file

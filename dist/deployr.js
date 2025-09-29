@@ -175,6 +175,7 @@ _a = Deployr, _Deployr_addExtensions = function _Deployr_addExtensions(e_1, dire
                     continue;
                 newExtensions.push(extension);
             }
+            console.log("BBB", extendedNames, LoadOrdr.extensions, newExtensions);
             LoadOrdr.extensions = newExtensions;
             yield LoadOrdr.save();
             return { ok: true };
