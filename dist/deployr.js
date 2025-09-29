@@ -167,15 +167,16 @@ _a = Deployr, _Deployr_addExtensions = function _Deployr_addExtensions(e_1, dire
     });
 }, _Deployr_setLoadOrder = function _Deployr_setLoadOrder(e, extendedNames) {
     return __awaiter(this, void 0, void 0, function* () {
-        LoadOrdr.extensions = [];
+        const newExtensions = [];
         try {
             for (const extendedName of extendedNames) {
                 const extension = LoadOrdr.extensions.find((extension) => extension.extendedName === extendedName);
                 if (!extension)
                     continue;
-                LoadOrdr.extensions.push(extension);
+                newExtensions.push(extension);
             }
-            console.log("QQQ", extendedNames, LoadOrdr.extensions);
+            LoadOrdr.extensions = newExtensions;
+            yield LoadOrdr.save();
             return { ok: true };
         }
         catch (error) {

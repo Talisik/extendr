@@ -86,7 +86,7 @@ export abstract class Deployr {
     }
 
     static async #setLoadOrder(e: IpcMainInvokeEvent, extendedNames: string[]) {
-        LoadOrdr.extensions = [];
+        const newExtensions = [];
 
         try {
             for (const extendedName of extendedNames) {
@@ -96,13 +96,13 @@ export abstract class Deployr {
 
                 if (!extension) continue;
 
-                LoadOrdr.extensions.push(extension);
+                newExtensions.push(extension);
             }
 
-            console.log("QQQ", extendedNames, LoadOrdr.extensions);
+            LoadOrdr.extensions = newExtensions;
 
             // Save the updated load order to file
-            // await LoadOrdr.save();
+            await LoadOrdr.save();
 
             return { ok: true };
         } catch (error: any) {
