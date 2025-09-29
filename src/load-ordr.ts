@@ -106,7 +106,9 @@ export class LoadOrdr {
 
         await fs.writeFile(
             Config.loadOrderPath,
-            JSON.stringify(this.extensions)
+            JSON.stringify(
+                this.extensions.map(({ extendedName }) => extendedName)
+            )
         );
     }
 }
