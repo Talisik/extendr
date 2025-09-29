@@ -20,7 +20,7 @@ import { Loadr } from "./loadr.js";
 import { getStat } from "./helpers/utils.js";
 export class LoadOrdr {
     static get displayable() {
-        return Loadr.extensions.map((extension) => (Object.assign(Object.assign({}, extension.config), { priority: this.extensions.indexOf(extension), active: this.extensions.includes(extension), module: undefined, main: undefined })));
+        return Loadr.extensions.map((extension) => (Object.assign(Object.assign({}, extension.config), { extendedName: extension.extendedName, priority: this.extensions.indexOf(extension), active: this.extensions.includes(extension), module: undefined, main: undefined })));
     }
     static sort() {
         this.extensions = this.extensions.sort((a, b) => {

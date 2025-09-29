@@ -3,12 +3,12 @@ export declare class LoadOrdr {
     #private;
     static extensions: Extension[];
     static get displayable(): {
+        extendedName: string;
         priority: number;
         active: boolean;
         module: undefined;
         main: undefined;
         name?: string;
-        version?: string;
         fullpath: string;
         directory: import("./index.js").ExtensionPathType;
         packageJson?: any;

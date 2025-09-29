@@ -1,7 +1,6 @@
 import { Event } from "../event.js";
 export type ExtensionType = {
     name?: string;
-    version?: string;
     fullpath: string;
     directory: ExtensionPathType;
     module: {
