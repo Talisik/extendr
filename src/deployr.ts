@@ -179,7 +179,13 @@ export abstract class Deployr {
             };
         }
 
+        const loadedExtensions = await ipcRenderer.invoke(
+            ChannelNames.GET_EXTENSIONS
+        );
+
         contextBridge.exposeInMainWorld("extendr", {
+            extensions: loadedExtensions,
+
             async addExtensions(directories: string[]) {
                 return await ipcRenderer.invoke(
                     ChannelNames.ADD_EXTENSIONS,
@@ -267,11 +273,5 @@ export abstract class Deployr {
 
             extensions,
         });
-
-        const loadedExtensions = await ipcRenderer.invoke(
-            ChannelNames.GET_EXTENSIONS
-        );
-
-        console.log("Testing", loadedExtensions);
     }
 }
