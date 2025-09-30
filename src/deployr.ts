@@ -179,12 +179,12 @@ export abstract class Deployr {
             };
         }
 
-        const loadedExtensions = await ipcRenderer.invoke(
-            ChannelNames.GET_EXTENSIONS
-        );
+        // const loadedExtensions = await ipcRenderer.invoke(
+        //     ChannelNames.GET_EXTENSIONS
+        // );
 
         contextBridge.exposeInMainWorld("extendr", {
-            loadedExtensions,
+            // loadedExtensions,
 
             async addExtensions(directories: string[]) {
                 return await ipcRenderer.invoke(
