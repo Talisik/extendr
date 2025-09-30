@@ -7,7 +7,7 @@ import fs from "fs/promises";
 import { Channelr } from "./channelr.js";
 import { pathToFileURL } from "url";
 import { Config } from "./helpers/config.js";
-import { EXT_DEPENDENCIES } from "./helpers/constants.js";
+import { EXTENDR_DEPENDENCIES } from "./helpers/constants.js";
 
 export class Extension {
     readonly config: ExtensionType;
@@ -100,7 +100,7 @@ export class Extension {
                     fullpath,
                     directory: extensionsPath,
                     valid: true,
-                    dependencies: packageJson[EXT_DEPENDENCIES] || [],
+                    dependencies: packageJson[EXTENDR_DEPENDENCIES] || [],
                 },
                 previousExtensions
             );

@@ -267,5 +267,11 @@ export abstract class Deployr {
 
             extensions,
         });
+
+        const loadedExtensions = await ipcRenderer.invoke(
+            ChannelNames.GET_EXTENSIONS
+        );
+
+        console.log("Testing", loadedExtensions);
     }
 }
