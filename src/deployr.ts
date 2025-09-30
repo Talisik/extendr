@@ -184,7 +184,7 @@ export abstract class Deployr {
         );
 
         contextBridge.exposeInMainWorld("extendr", {
-            extensions: loadedExtensions,
+            loadedExtensions,
 
             async addExtensions(directories: string[]) {
                 return await ipcRenderer.invoke(
