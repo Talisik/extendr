@@ -1,1 +1,1 @@
-export const EXT_DEPENDENCIES = "extDependencies";
+export const EXTENDR_DEPENDENCIES = "extendrDependencies";

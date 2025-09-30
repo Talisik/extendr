@@ -27,7 +27,7 @@ import fs from "fs/promises";
 import { Channelr } from "./channelr.js";
 import { pathToFileURL } from "url";
 import { Config } from "./helpers/config.js";
-import { EXT_DEPENDENCIES } from "./helpers/constants.js";
+import { EXTENDR_DEPENDENCIES } from "./helpers/constants.js";
 export class Extension {
     constructor(config, previousExtensions) {
         _Extension_mainLoaded.set(this, void 0);
@@ -82,7 +82,7 @@ export class Extension {
                     fullpath,
                     directory: extensionsPath,
                     valid: true,
-                    dependencies: packageJson[EXT_DEPENDENCIES] || [],
+                    dependencies: packageJson[EXTENDR_DEPENDENCIES] || [],
                 }, previousExtensions);
             }
             const module = yield __classPrivateFieldGet(this, _a, "m", _Extension_readModule).call(this, path.join(fullpath, "index.js"));

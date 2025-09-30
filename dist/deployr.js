@@ -51,7 +51,9 @@ export class Deployr {
                     });
                 };
             }
+            const loadedExtensions = yield ipcRenderer.invoke(ChannelNames.GET_EXTENSIONS);
             contextBridge.exposeInMainWorld("extendr", {
+                loadedExtensions,
                 addExtensions(directories) {
                     return __awaiter(this, void 0, void 0, function* () {
                         return yield ipcRenderer.invoke(ChannelNames.ADD_EXTENSIONS, directories);
