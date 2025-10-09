@@ -1,6 +1,6 @@
 {
   "name": "extendr",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -25,11 +25,11 @@
   "homepage": "https://github.com/Talisik/extendr#readme",
   "description": "",
   "devDependencies": {
-    "electron": "^38.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "electron": "^38.2.2",
     "uuid": "^13.0.0"
   }
 }
