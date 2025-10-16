@@ -2,7 +2,6 @@
   "name": "@types/extendr",
   "version": "1.2.0",
   "types": "src/index.d.ts",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Talisik/extendr.git#types"
@@ -16,8 +15,6 @@
   "homepage": "https://github.com/Talisik/extendr#readme",
   "description": "",
   "devDependencies": {
-    "electron": "^38.3.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "electron": "^38.3.0"
   }
 }

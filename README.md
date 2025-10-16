@@ -15,7 +15,7 @@ An Electron extension management system that provides a robust framework for loa
 ## Installation
 
 ```bash
-npm install git+https://github.com/Talisik/extendr.git
+npm install git+https://github.com/Talisik/extendr.git#types
 ```
 
 ## Quick Start
