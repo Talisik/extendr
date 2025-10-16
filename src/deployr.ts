@@ -14,6 +14,7 @@ import { Loadr } from "./loadr.js";
 import { Config } from "./helpers/config.js";
 import { Extension } from "./extension.js";
 import { v4 as uuidv4 } from "uuid";
+import * as electron from "electron";
 
 export abstract class Deployr {
     static async #addExtensions(
@@ -157,7 +158,20 @@ export abstract class Deployr {
         ipcMain.handle(ChannelNames.DOWNLOAD, this.#download);
         ipcMain.handle(ChannelNames.SET_LOAD_ORDER, this.#setLoadOrder);
 
-        for (const extension of LoadOrdr.extensions) await extension.loadMain();
+        for (const extension of LoadOrdr.extensions)
+            await extension.loadMain({
+                events: EventManagr,
+                channels: new Channelr(extension.config.name!),
+                electron,
+
+                getExtension(name: string) {
+                    return Loadr.getExtension(name);
+                },
+
+                getExtensionModule(name: string) {
+                    return Loadr.getExtension(name)?.module;
+                },
+            });
     }
 
     static async setupPreload() {

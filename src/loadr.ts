@@ -143,14 +143,14 @@ export abstract class Loadr {
     }
 
     /**
-     * Get the module of an extension.
+     * Get the extension by name.
      */
-    static getExtensionModule(name: string) {
+    static getExtension(name: string) {
         return this.#extensions.find(
             (extension) =>
                 extension.extendedName === name ||
                 extension.config.name === name ||
                 extension.config.fullpath === name
-        )?.config.module;
+        );
     }
 }

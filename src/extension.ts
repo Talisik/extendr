@@ -16,6 +16,7 @@ export class Extension {
      * Whether the main function of the extension has been loaded.
      */
     #mainLoaded: boolean;
+    module: any;
 
     constructor(config: ExtensionType, previousExtensions: Extension[]) {
         this.config = config;
@@ -37,24 +38,17 @@ export class Extension {
         return `${this.config.directory.name}:${directory}:${this.config.name}`;
     }
 
-    async loadMain() {
+    async loadMain(args: any) {
         if (!this.config.valid) return;
 
         if (this.#mainLoaded) return;
 
         if (!this.config.main) return;
 
-        const result = await this.config.main?.({
-            events: EventManagr,
-            channels: new Channelr(this.config.name!),
-            electron,
-        });
-
+        this.module = await this.config.main?.(args);
         this.#mainLoaded = true;
 
         if (Config.log) console.log("Loaded extension:", this.extendedName);
-
-        return result;
     }
 
     static async #readModule(filepath: string) {
