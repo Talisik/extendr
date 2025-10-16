@@ -1,20 +1,11 @@
 {
-  "name": "extendr",
+  "name": "@types/extendr",
   "version": "1.2.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "types": "src/index.d.ts",
   "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "test": "ts-node test/index.ts",
-    "prepare": "npm run build"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Talisik/extendr.git"
+    "url": "git+https://github.com/Talisik/extendr.git#types"
   },
   "keywords": [],
   "author": "",
@@ -25,11 +16,8 @@
   "homepage": "https://github.com/Talisik/extendr#readme",
   "description": "",
   "devDependencies": {
+    "electron": "^38.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
-  },
-  "dependencies": {
-    "electron": "^38.2.2",
-    "uuid": "^13.0.0"
   }
 }
