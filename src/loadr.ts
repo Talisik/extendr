@@ -46,6 +46,13 @@ export abstract class Loadr {
 
                 if (!extension) continue;
 
+                if (
+                    this.#extensions.find(
+                        (e) => e.config.name === extension.config.name
+                    )
+                )
+                    continue;
+
                 this.#extensions.push(extension);
 
                 if (Config.log)
@@ -107,6 +114,7 @@ export abstract class Loadr {
             await fs.cp(directory, destinationPath, {
                 recursive: true,
             });
+
             return {
                 ok: true,
                 path: destinationPath,

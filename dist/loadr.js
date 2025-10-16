@@ -107,6 +107,8 @@ _a = Loadr, _Loadr_findExtensions = function _Loadr_findExtensions(previousExten
                 const extension = yield Extension.new(previousExtensions, extensionsPath, item);
                 if (!extension)
                     continue;
+                if (__classPrivateFieldGet(this, _a, "f", _Loadr_extensions).find((e) => e.config.name === extension.config.name))
+                    continue;
                 __classPrivateFieldGet(this, _a, "f", _Loadr_extensions).push(extension);
                 if (Config.log)
                     console.log("Found extension:", extension.extendedName);
