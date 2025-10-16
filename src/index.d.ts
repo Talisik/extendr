@@ -125,7 +125,7 @@ export class Extension {
 
     get extendedName(): string;
 
-    loadMain(args: args): Promise<any>;
+    loadMain(args: ExtensionContext): Promise<any>;
 
     static new(
         previousExtensions: Extension[],
@@ -135,7 +135,7 @@ export class Extension {
 }
 
 // Main args interface for extension main functions
-export interface args {
+export interface ExtensionContext {
     /**
      * Event manager for inter-extension communication
      */
